@@ -22,6 +22,7 @@ export const handler = async (event) => {
     const { code, input = "" } = JSON.parse(event["body"]);
 
     const codePath = path.join(tmpDir, fileName + ".java");
+    const classPath = path.join(tmpDir, fileName);
     const inputPath = path.join(tmpDir, fileName + ".txt");
 
     await fs.writeFile(codePath, code, function (err) {
@@ -30,9 +31,10 @@ export const handler = async (event) => {
     await fs.writeFile(inputPath, input, function (err) {
       if (err) throw err;
     });
-
+    
+    await execAsync(`javac ${codePath}`)
     const { error, stdout, stderr } = await execAsync(
-      `java ${codePath} < ${inputPath}`
+      `java ${classPath} < ${inputPath}`
     ).catch((error) => {
       throw error;
     });
