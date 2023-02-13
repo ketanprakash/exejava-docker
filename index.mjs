@@ -34,7 +34,7 @@ export const handler = async (event) => {
     
     await execAsync(`javac ${codePath}`)
     const { error, stdout, stderr } = await execAsync(
-      `java Main < ${inputPath}`
+      `java ${classPath} < ${inputPath}`
     ).catch((error) => {
       throw error;
     });
