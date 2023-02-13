@@ -21,8 +21,7 @@ export const handler = async (event) => {
     const fileName = await generateFileName();
     const { code, input = "" } = JSON.parse(event["body"]);
 
-    const codePath = path.join(tmpDir, fileName + ".cpp");
-    const exePath = path.join(tmpDir, fileName + ".exe");
+    const codePath = path.join(tmpDir, fileName + ".java");
     const inputPath = path.join(tmpDir, fileName + ".txt");
 
     await fs.writeFile(codePath, code, function (err) {
@@ -32,9 +31,8 @@ export const handler = async (event) => {
       if (err) throw err;
     });
 
-    await execAsync(`g++ ${codePath} -o ${exePath}`);
     const { error, stdout, stderr } = await execAsync(
-      `${exePath} < ${inputPath}`
+      `java ${codePath} < ${inputPath}`
     ).catch((error) => {
       throw error;
     });

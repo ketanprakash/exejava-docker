@@ -4,6 +4,6 @@ FROM public.ecr.aws/lambda/nodejs:18
 COPY . ${LAMBDA_TASK_ROOT}/
 WORKDIR ${LAMBDA_TASK_ROOT}
 
-RUN yum install -y gcc-c++
+RUN yum install java-1.7.0-openjdk.x86_64
 # Set the CMD to your handler (could also be done as a parameter override outside of the Dockerfile)
 CMD [ "index.handler" ]
