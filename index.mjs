@@ -33,11 +33,18 @@ export const handler = async (event) => {
     });
     
     await execAsync(`javac ${codePath}`)
+    const startTime = new Date.now().getTime();
     const { error, stdout, stderr } = await execAsync(
-      `cd ${tmpDir} && java Main < ${inputPath}`
+      `cd ${tmpDir} && java Main < ${inputPath}`,
+      { timeout: 4000 }
     ).catch((error) => {
+      if (error.killed && error.signal === "SIGTERM"){
+        throw new Error("Time Limit Exceeded");
+      }
       throw error;
     });
+    const endTime = new Date.now().getTime();
+    const executionTime = endTime - startTime;
 
     const output = error || stderr || stdout;
     await fs.unlink(codePath);
@@ -48,7 +55,7 @@ export const handler = async (event) => {
         "Content-Type": "application/json",
       },
       isBase64Encoded: false,
-      body: JSON.stringify({ data: output, status: true }),
+      body: JSON.stringify({ data: output, status: true, executionTime }),
     };
 
     return response;
