@@ -33,7 +33,7 @@ export const handler = async (event) => {
     });
     
     await execAsync(`javac ${codePath}`)
-    const startTime = new Date.now().getTime();
+    const startTime = new Date().getTime();
     const { error, stdout, stderr } = await execAsync(
       `cd ${tmpDir} && java Main < ${inputPath}`,
       { timeout: 4000 }
@@ -43,7 +43,7 @@ export const handler = async (event) => {
       }
       throw error;
     });
-    const endTime = new Date.now().getTime();
+    const endTime = new Date().getTime();
     const executionTime = endTime - startTime;
 
     const output = error || stderr || stdout;
